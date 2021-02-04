@@ -1,3 +1,4 @@
+import re
 import jenkins
 from xml.etree.ElementTree import Element
 from xml_utils import XMLUtil
@@ -155,26 +156,8 @@ class JenkinsCli:
     def get_job_build_output(self, job_name, build_number):
         '''
         获取job构建输出
-        这里根据pipeline的输出格式进行了一些处理
-        其实我是觉得一大坨直接显示就不错，跟jenkins本身output一样
         '''
-        output = self.server.get_build_console_output(job_name, build_number)
-        output = output.replace('\\n', '\n')
-        stages = output.split('[Pipeline] stage')
-        stage_list = []
-        for stage in stages:
-            lines = stage.split('\n')
-            lines = [line.strip() for line in lines if line.strip() != '']
-            title = re.match(r'\[Pipeline\] { \((.*?)\)', lines[0])
-            if not title:
-                continue
-            title = title.group(1)
-            lines = [line for line in lines if line.find('[Pipeline]') == -1]
-            stage_list.append({
-                'title': title,
-                'output': lines
-            })
-        return stage_list
+        return self.server.get_build_console_output(job_name, build_number)
 
 
 jenkins_cli = JenkinsCli('http://jenkins.oldb.top', 'devops', '1166fff0ba663a66d34675e1d25f63ff48')
