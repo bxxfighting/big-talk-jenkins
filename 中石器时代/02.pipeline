@@ -1,0 +1,18 @@
+pipeline{
+  agent {
+    label 'master'
+  }
+  stages{
+    stage("打印job名称") {
+      steps {
+        script {
+          my_name = 'hello world'
+        }
+        // 重要的事情说三遍
+        sh label: '', script: "echo ${my_name}"
+        sh label: '', script: "echo ${my_name}"
+        sh label: '', script: "echo ${my_name}"
+      }
+    }
+  }
+}
