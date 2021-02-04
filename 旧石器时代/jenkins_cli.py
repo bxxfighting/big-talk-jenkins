@@ -26,6 +26,16 @@ class JenkinsCli:
         jobs = self.server.get_jobs(view_name=view_name)
         return jobs
 
+    def get_job_config(self, job_name):
+        '''
+        获取job配置
+        '''
+        config_xml = self.server.get_job_config(job_name)
+        return config_xml
+
+    def create_job(self, job_name, config_xml):
+        self.server.create_job(job_name, config_xml)
+
     def run_job(self, job_name, d_param):
         '''
         运行job，指定job名称及参数
