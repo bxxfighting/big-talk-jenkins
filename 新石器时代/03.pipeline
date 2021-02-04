@@ -1,0 +1,15 @@
+#!groovy
+
+node('master') {
+  stage("打印job名称") {
+    // 传一个名为name的参数
+    if (name == "hello") {
+      // 重要的事情说三遍
+      sh label: '', script: "echo ${name}"
+      sh label: '', script: "echo ${name}"
+      sh label: '', script: "echo ${name}"
+    } else {
+        println "你不是hello"
+    }
+  }
+}
