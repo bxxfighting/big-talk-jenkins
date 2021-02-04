@@ -6,7 +6,7 @@ pipeline{
   stages{
     stage("打印job名称") {
       when {
-        equals expected: "helo", actual: name
+        equals expected: "hello", actual: name
       }
       steps {
         // 重要的事情说三遍
