@@ -1,0 +1,19 @@
+pipeline{
+  // job需要增加一个为name的参数，类型为字符串
+  agent {
+    label 'master'
+  }
+  stages{
+    stage("打印job名称") {
+      when {
+        equals expected: "helo", actual: name
+      }
+      steps {
+        // 重要的事情说三遍
+        sh label: '', script: "echo ${name}"
+        sh label: '', script: "echo ${name}"
+        sh label: '', script: "echo ${name}"
+      }
+    }
+  }
+}
