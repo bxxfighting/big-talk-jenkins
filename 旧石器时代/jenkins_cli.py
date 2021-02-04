@@ -1,4 +1,6 @@
 import jenkins
+from xml.etree.ElementTree import Element
+from xml_utils import XMLUtil
 
 
 class JenkinsCli:
@@ -35,6 +37,62 @@ class JenkinsCli:
 
     def create_job(self, job_name, config_xml):
         self.server.create_job(job_name, config_xml)
+
+    def get_view_config(self, view_name):
+        '''
+        获取视图配置
+        '''
+        config_xml = self.server.get_view_config(view_name)
+        return config_xml
+
+    def create_view(self, view_name, config_xml):
+        '''
+        创建view
+        '''
+        if config_xml is None:
+            config_xml = jenkins.EMPTY_VIEW_CONFIG_XML
+        self.server.create_view(view_name, config_xml)
+
+    def reconfig_view(self, view_name, config_xml):
+        '''
+        重新配置view
+        '''
+        self.server.reconfig_view(view_name, config_xml)
+
+    def view_exists(self, view_name):
+        '''
+        判断view是否存在
+        '''
+        return self.server.view_exists(view_name)
+
+    def add_jobs_to_view(self, jobs_name, view_name):
+        '''
+        增加job到view
+        '''
+        view_config_xml = jenkins.EMPTY_VIEW_CONFIG_XML
+        apply_config_func = self.create_view
+        if self.view_exists(view_name):
+            view_config_xml = self.get_view_config(view_name)
+            apply_config_func = self.reconfig_view
+
+        tr = XMLUtil.str2xml_tree(view_config_xml)
+
+        # jenkins中views下所有job必须按字符序正确排序，要不然会显示不正常
+        jns = tr.find('jobNames')
+        for job in list(jns.iter()):
+            if job.tag == 'string':
+                jobs_name.append(job.text)
+                # 先把原来的删除了
+                jns.remove(job)
+
+        # 重新把所有job排好序后，再加入到view中
+        jobs_name.sort()
+        for job_name in jobs_name:
+            ele = Element('string')
+            ele.text = job_name
+            jns.append(ele)
+        view_config_xml = XMLUtil.xml_tree2str(tr)
+        apply_config_func(view_name, view_config_xml)
 
     def run_job(self, job_name, d_param):
         '''
