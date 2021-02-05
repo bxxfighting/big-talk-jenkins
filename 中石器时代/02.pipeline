@@ -3,7 +3,8 @@ pipeline{
     label 'master'
   }
   stages{
-    stage("打印job名称") {
+    // 在相同的stage下，在script中定义一个变量，可以在外面直接使用
+    stage("相同stage下定义变量并使用") {
       steps {
         script {
           my_name = 'hello'
@@ -14,6 +15,7 @@ pipeline{
         sh label: '', script: "echo ${my_name}"
       }
     }
+    // 在不同的stage下，在script中定义一个变量，一直可以随意使用
     stage("定义变量") {
       steps {
         script {
@@ -24,6 +26,18 @@ pipeline{
     stage("使用变量") {
       steps {
         sh label: '', script: "echo ${it_name}"
+      }
+    }
+    // 如果传入一个参数是一个ip列表用逗号分隔
+    // 比如：192.168.12.12,192.168.13.13,192.168.13.15
+    // 我们可以通过split分割成列表
+    stage("字符串分割") {
+      steps {
+          script {
+              ips_str = '192.168.12.12,192.168.13.13,192.168.13.15'
+              ips = ips_str.split(',')
+              println ips
+          }
       }
     }
   }
