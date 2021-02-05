@@ -6,12 +6,24 @@ pipeline{
     stage("打印job名称") {
       steps {
         script {
-          my_name = 'hello world'
+          my_name = 'hello'
         }
         // 重要的事情说三遍
         sh label: '', script: "echo ${my_name}"
         sh label: '', script: "echo ${my_name}"
         sh label: '', script: "echo ${my_name}"
+      }
+    }
+    stage("定义变量") {
+      steps {
+        script {
+          it_name = 'world'
+        }
+      }
+    }
+    stage("使用变量") {
+      steps {
+        sh label: '', script: "echo ${it_name}"
       }
     }
   }
