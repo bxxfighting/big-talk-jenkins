@@ -1,0 +1,11 @@
+#!groovy
+
+node('master') {
+  stage("获取最近一次commit id") {
+      // 需要在代码目录执行: dir('xxxx')
+      // returnStdout: true 返回标准输出内容
+      COMMIT_ID = sh returnStdout: true, script: "git rev-parse --short HEAD"
+      // 去除回车字符
+      COMMIT_ID = COMMIT_ID.trim()
+  }
+}
